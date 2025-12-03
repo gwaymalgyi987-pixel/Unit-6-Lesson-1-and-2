@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 6: Let's Eat Out! & Do you like Healthy Food?</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #f0fdf4; }
+        
+        /* Drag and Drop Styles */
+        .draggable {
+            cursor: move;
+            transition: all 0.2s;
+        }
+        .draggable.dragging {
+            opacity: 0.5;
+            transform: scale(1.05);
+        }
+        .drop-zone {
+            transition: all 0.2s;
+            border: 2px dashed #cbd5e1;
+        }
+        .drop-zone.drag-over {
+            background-color: #dcfce7;
+            border-color: #22c55e;
+            transform: scale(1.02);
+        }
+
+        /* Video Player Simulation */
+        .video-player {
+            background: #000;
+            border-radius: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .video-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            color: white;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: linear-gradient(to top, #000, transparent);
+        }
+        .subtitle {
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        .btnf1{
+            display:flex;
+
+            }
+        .sbtn{
+            padding-left: 10px;
+        }
+         #myVideo {
+    border: 1px solid black;
+    display: block;
+    margin-bottom: 10px;
+}
+
+#playButton1 {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: chocolate;
+    
+}
+#playButton2 {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: chocolate;    
+}
+#playButton3 {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: chocolate;    
+}
+#playButton4 {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: chocolate;    
+}
+/* for 5a */
+/* Custom Styles for Drag and Drop Visuals */
+        .draggable-item {
+            cursor: grab;
+            transition: all 0.2s ease;
+        }
+        
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+
+        .draggable-item.selected {
+            border: 2px solid #3b82f6;
+            background-color: #eff6ff;
+            transform: scale(1.02);
+        }
+
+        .drop-zone {
+            transition: all 0.2s ease;
+            min-height: 60px;
+        }
+
+        .drop-zone.drag-over {
+            background-color: #dbeafe; /* light blue */
+            border-color: #3b82f6;
+            border-style: dashed;
+        }
+
+        .drop-zone.correct {
+            border-color: #22c55e; /* green */
+            background-color: #f0fdf4;
+        }
+
+        .drop-zone.incorrect {
+            border-color: #ef4444; /* red */
+            background-color: #fef2f2;
+        }
+
+        /* Prevent selecting text while dragging */
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        /* Audio visualizer bars animation */
+        .bar {
+            width: 4px;
+            height: 10px;
+            background: #fff;
+            animation: sound 0ms -800ms linear infinite alternate;
+            transition: height 0.1s;
+        }
+        
+        @keyframes sound {
+            0% { height: 4px; }
+            100% { height: 20px; }
+        }
+        
+        .playing .bar {
+            animation-duration: 400ms;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Navigation -->
+    <nav class="bg-emerald-600 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <i data-lucide="utensils"></i> Unit 6 Lesson 1 and 2
+            </h1>
+            <div class="flex gap-4 mt-2 md:mt-0">
+                <button onclick="switchTab('lesson1')" id="btn-lesson1" class="px-4 py-2 rounded-full bg-white text-emerald-700 font-bold transition">Lesson 1: Let's eat out!</button>
+                <button onclick="switchTab('lesson2')" id="btn-lesson2" class="px-4 py-2 rounded-full bg-emerald-700 text-white hover:bg-emerald-800 transition">Lesson 2: Do you eat healthy food?</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- LESSON 1 SECTION -->
+        <div id="lesson1" class="space-y-12">
+            
+            <!-- Header -->
+            <header class="text-center space-y-2">
+                <h2 class="text-4xl font-bold text-emerald-800">Lesson 1: Let’s eat out!</h2>
+                <p class="text-xl text-slate-600">Ordering food, drinks, and talking about prices.</p>
+            </header>
+
+            <!-- Activity 1: Q&A -->
+            <section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center">1</span> Conversation Practice</h3>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <p class="font-bold text-orange-700 mb-2">Question 1</p>
+                        <p>Where do you usually eat out?</p>
+                        <div class="mt-2 text-sm text-slate-500 italic">Example Answer: Restaurant</div>
+                        <input type="text" placeholder="Type your answer..." class="w-full mt-2 p-2 border rounded focus:ring-2 focus:ring-orange-300 outline-none">
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <p class="font-bold text-orange-700 mb-2">Question 2</p>
+                        <p>What do you usually have there?</p>
+                        <div class="mt-2 text-sm text-slate-500 italic">Example Answer: Rice and curry</div>
+                        <input type="text" placeholder="Type your answer..." class="w-full mt-2 p-2 border rounded focus:ring-2 focus:ring-orange-300 outline-none">
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <p class="font-bold text-orange-700 mb-2">Question 3</p>
+                        <p>Do you like the place? Why?</p>
+                        <div class="mt-2 text-sm text-slate-500 italic">Example Answer: Delicious and fresh</div>
+                        <input type="text" placeholder="Type your answer..." class="w-full mt-2 p-2 border rounded focus:ring-2 focus:ring-orange-300 outline-none">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity 2a: Drag and Drop -->
+            <section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-blue-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center">2a</span> Match Food to Pictures</h3>
+                <p class="mb-4 text-slate-600">Drag the food names to the correct emoji plate.</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+                    <!-- Drop Zones -->
+                    <div class="drop-zone bg-slate-50 p-4 rounded-xl text-center min-h-[140px] flex flex-col items-center justify-center" data-match="soup">
+                        <div class="text-4xl mb-2">🍜</div>
+                        <span class="text-xs text-slate-400">(Noodle Soup)</span>
+                    </div>
+                    <div class="drop-zone bg-slate-50 p-4 rounded-xl text-center min-h-[140px] flex flex-col items-center justify-center" data-match="fish">
+                        <div class="text-4xl mb-2">🐟🍛</div>
+                        <span class="text-xs text-slate-400">(Fish Curry)</span>
+                    </div>
+                    <div class="drop-zone bg-slate-50 p-4 rounded-xl text-center min-h-[140px] flex flex-col items-center justify-center" data-match="veg">
+                        <div class="text-4xl mb-2">🥦🥕</div>
+                        <span class="text-xs text-slate-400">(Fried Veg)</span>
+                    </div>
+                    <div class="drop-zone bg-slate-50 p-4 rounded-xl text-center min-h-[140px] flex flex-col items-center justify-center" data-match="lime">
+                        <div class="text-4xl mb-2">🥤🍋</div>
+                        <span class="text-xs text-slate-400">(Lime Juice)</span>
+                    </div>
+                    <div class="drop-zone bg-slate-50 p-4 rounded-xl text-center min-h-[140px] flex flex-col items-center justify-center" data-match="chicken">
+                        <div class="text-4xl mb-2">🍗🍛</div>
+                        <span class="text-xs text-slate-400">(Chicken Curry)</span>
+                    </div>
+                </div>
+
+                <!-- Draggable Items -->
+                <div class="flex flex-wrap gap-3 justify-center bg-blue-50 p-4 rounded-xl">
+                    <div class="draggable bg-white px-4 py-2 rounded-lg shadow cursor-grab border border-blue-200 hover:bg-blue-100" draggable="true" id="lime">Lime Juice</div>
+                    <div class="draggable bg-white px-4 py-2 rounded-lg shadow cursor-grab border border-blue-200 hover:bg-blue-100" draggable="true" id="chicken">Chicken Curry</div>
+                    <div class="draggable bg-white px-4 py-2 rounded-lg shadow cursor-grab border border-blue-200 hover:bg-blue-100" draggable="true" id="soup">Chicken Noodle Soup</div>
+                    <div class="draggable bg-white px-4 py-2 rounded-lg shadow cursor-grab border border-blue-200 hover:bg-blue-100" draggable="true" id="veg">Fried Vegetables</div>
+                    <div class="draggable bg-white px-4 py-2 rounded-lg shadow cursor-grab border border-blue-200 hover:bg-blue-100" draggable="true" id="fish">Fish Curry</div>
+                </div>
+            </section>
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center">2b</span> Look at the menu of the <I>Moonlight Restaurant.</I> What can you have there?</h3>
+            <!-- Activity 2b: Menu -->
+            <section class="bg-indigo-900 text-white p-8 rounded-2xl shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 opacity-10 text-9xl">🌙</div>
+                <h3 class="text-3xl font-serif text-center mb-6 text-yellow-300 border-b border-yellow-300 pb-4 inline-block w-full">Moonlight Restaurant</h3>
+                <h3 class="text-3xl font-serif text-center mb-6 text-white-300 border-b border-yellow-300 pb-4 inline-block w-full">Menu</h3>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl text-yellow-200 mb-4 font-bold uppercase tracking-wider">Rice and Curry</h4>
+                        <ul class="space-y-3">
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Rice</span> <span class="font-mono text-yellow-400">200 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Chicken</span> <span class="font-mono text-yellow-400">1,200 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Mutton</span> <span class="font-mono text-yellow-400">1,500 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Pork</span> <span class="font-mono text-yellow-400">1,200 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Fish</span> <span class="font-mono text-yellow-400">1,200 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Eggs</span> <span class="font-mono text-yellow-400">1,000 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Chicken noodle soup</span> <span class="font-mono text-yellow-400">1,200 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Vermicelli soup</span> <span class="font-mono text-yellow-400">1,200 Ks</span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xl text-yellow-200 mb-4 font-bold uppercase tracking-wider">Vegetables</h4>
+                        <ul class="space-y-3">
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Fired cauliflower</span> <span class="font-mono text-yellow-400">500 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Fired vegetables</span> <span class="font-mono text-yellow-400">500 Ks</span></li>
+                        </ul><br>
+                        <h4 class="text-xl text-yellow-200 mb-4 font-bold uppercase tracking-wider">Drinks</h4>
+                        <ul class="space-y-3">
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Coffee/tea</span> <span class="font-mono text-yellow-400">300 Ks</span></li>
+                            <li class="flex justify-between border-b border-indigo-700 pb-1"><span>Lime juice</span> <span class="font-mono text-yellow-400">600 Ks</span></li>
+                        </ul>
+                    </div>
+                    
+                        
+                    
+                </div>
+            </section>
+
+            <!-- Activity 2c: Listen & Complete -->
+            <section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-emerald-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span class="bg-emerald-500 text-white rounded-full w-8 h-8 flex items-center justify-center">2c</span> 
+                    Listen and Complete the dialogue with the food items.
+                </h3>
+                <div class="btnf1"><div><button onclick="Clickred();" class="mb-6 flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-bold hover:bg-emerald-200 transition">
+                    <i data-lucide="volume-2"></i> Play Dialogue
+                </button></div>
+                <div class="sbtn"><button onclick="Clickred1();" class="mb-6 flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full font-bold hover:bg-emerald-200 transition">
+                    <i data-lucide="volume-2"></i> Pause Dialogue
+                </button></div></div>
+                <!-- 1. The Audio Element (hidden from user controls) -->
+  <audio id="myAudio" src="./1.mp3" autoplay="false"></audio>
+
+  <!-- 2. The Button Element with an onclick event -->
+ 
+
+  <!-- 3. The JavaScript -->
+  <script>
+    function Clickred(){
+        var sound = document.getElementById('myAudio');
+        sound.play();
+    }
+    function Clickred1(){
+        var sound = document.getElementById('myAudio');
+        sound.pause();
+    }
+  </script>
+
+                <div class="space-y-4 bg-slate-50 p-6 rounded-lg leading-loose">
+                    <p><strong class="text-indigo-600">Waiter:</strong> Good morning. What would you like to have?</p>
+                    <p><strong class="text-pink-600">Woman:</strong> May we look at the menu first?</p>
+                    <p><strong class="text-indigo-600">Waiter:</strong> Here you are.</p>
+                    <p>
+                        <strong class="text-pink-600">Woman:</strong> Yes, I'll have (1) 
+                        <select id="d1-a1" class="bg-white border p-1 rounded"><option value="">choose...</option><option value="fried vegetables">rice with chicken</option><option value="chicken curry">fried vegetables</option></select>. 
+                        And what about you, Toe Toe?
+                    </p>
+                    <p>
+                        <strong class="text-purple-600">Girl:</strong> I'll have (2) 
+                        <select id="d1-a2" class="bg-white border p-1 rounded"><option value="">choose...</option><option value="chicken curry">rice with fish</option><option value="lime juice">lime juice</option></select>.
+                    </p>
+                    <p><strong class="text-indigo-600">Waiter:</strong> Would you like anything to drink?</p>
+                    <p>
+                        <strong class="text-pink-600">Woman:</strong> I’ll have (3) 
+                        <select id="d1-a3" class="bg-white border p-1 rounded"><option value="">choose...</option><option value="lime juice">coffee</option><option value="coffee">lime juice</option></select>.
+                    </p>
+                    <p>
+                        <strong class="text-purple-600">Girl:</strong> I'll have (4) 
+                        <select id="d1-a4" class="bg-white border p-1 rounded"><option value="">choose...</option><option value="chicken noodle soup">lime juice</option><option value="tea">tea</option></select> please.
+                    </p>
+                    <p class="text-sm italic text-slate-500 my-2">(a few minutes later)</p>
+                    <p><strong class="text-pink-600">Woman:</strong> Waiter, how much does our bill come to?</p>
+                    <p><strong class="text-indigo-600">Waiter:</strong> It's 3,700 kyats.</p>
+                </div>
+                <button onclick="checkDialogue1()" class="mt-4 bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700">Check Answers</button>
+                <div id="result-d1" class="mt-2 text-sm font-bold"></div>
+            </section>
+
+            <!-- Activity 3: Prices -->
+            <section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-yellow-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span class="bg-yellow-500 text-white rounded-full w-8 h-8 flex items-center justify-center">3</span> 
+                    Listen and write the prices you hear.
+                </h3>
+                <audio id="myAudio3" src="./for 3.mp3" autoplay="false"></audio>
+                <div class="btnf1"><div><button onclick="Clickfor3();" class="mb-6 flex items-center gap-2 bg-pink-500 text-black-700 px-4 py-2 rounded-full font-bold hover:bg-yellow-200 transition">
+                    <i data-lucide="volume-2"></i> Play Price Audio
+                </button></div>
+                <div class="sbtn"><button onclick="Clickfor31();" class="mb-6 flex items-center gap-2 bg-pink-500 text-black-700 px-4 py-2 rounded-full font-bold hover:bg-yellow-200 transition">
+                    <i data-lucide="volume-2"></i> Pause Price Audio
+                </button></div>
+                </div>
+                <script>
+                    function Clickfor3(){
+                        var sound = document.getElementById('myAudio3');
+                        sound.play();
+                    }
+                    function Clickfor31(){
+                        var sound = document.getElementById('myAudio3');
+                        sound.pause();
+                    }
+                </script>
+                
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div class="flex flex-col">
+                        <label class="text-sm text-slate-500">Item 1</label>
+                        <input type="number" id="price1" class="border p-2 rounded focus:ring-yellow-400 focus:ring-2 outline-none" placeholder="? kyats">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm text-slate-500">Item 2</label>
+                        <input type="number" id="price2" class="border p-2 rounded focus:ring-yellow-400 focus:ring-2 outline-none" placeholder="? kyats">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm text-slate-500">Item 3</label>
+                        <input type="number" id="price3" class="border p-2 rounded focus:ring-yellow-400 focus:ring-2 outline-none" placeholder="? kyats">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm text-slate-500">Item 4</label>
+                        <input type="number" id="price4" class="border p-2 rounded focus:ring-yellow-400 focus:ring-2 outline-none" placeholder="? kyats">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-sm text-slate-500">Item 5</label>
+                        <input type="number" id="price5" class="border p-2 rounded focus:ring-yellow-400 focus:ring-2 outline-none" placeholder="? kyats">
+                    </div>
+                </div>
+                <button onclick="checkPrices()" class="mt-4 bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700">Check Prices</button>
+                <div id="result-prices" class="mt-2 text-sm font-bold"></div>
+            </section>
+<!-- 5a Section -->
+    <header class="w-full max-w-4xl mb-6 text-center">
+        <h1 class="text-2x1 md:text-2xl font-bold text-gray-800 mb-2">5a Listen to the dialogue between a customer and a waiter.</h1>
+        <p class="text-gray-600">Put the sentences in the correct order. The first one is done for you.</p>
+        
+        <!-- Audio Player Simulation -->
+        <div class="mt-4 flex justify-center">
+            <audio id="myAudio5" src="./5a.mp3" autoplay="false"></audio>
+                <div class="btnf1"><div><button onclick="Clickfor5();" class="mb-6 flex items-center gap-2 bg-pink-500 text-black-700 px-4 py-2 rounded-full font-bold hover:bg-yellow-200 transition">
+                    <i data-lucide="volume-2"></i> Play Price Audio
+                </button></div>
+                <div class="sbtn"><button onclick="Clickfor51();" class="mb-6 flex items-center gap-2 bg-pink-500 text-black-700 px-4 py-2 rounded-full font-bold hover:bg-yellow-200 transition">
+                    <i data-lucide="volume-2"></i> Pause Price Audio
+                </button></div>
+                </div>
+                <script>
+                    function Clickfor5(){
+                        var sound = document.getElementById('myAudio5');
+                        sound.play();
+                    }
+                    function Clickfor51(){
+                        var sound = document.getElementById('myAudio5');
+                        sound.pause();
+                    }
+                </script>
+        </div>
+        
+    </header>
+
+    <!-- Game Area -->
+    <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Left Column: Source Sentences -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">
+                <i class="fas fa-list-ul mr-2 text-indigo-500"></i>Scrambled Sentences
+            </h2>
+            <p class="text-sm text-gray-500 mb-4">Drag sentences (or tap to select) and place them in the correct boxes on the right.</p>
+            
+            <div id="source-container" class="space-y-3 min-h-[400px]">
+                <!-- Sentences will be injected here via JS -->
+            </div>
+        </div>
+
+        <!-- Right Column: Target Boxes -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <h2 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2">
+                <i class="fas fa-sort-numeric-down mr-2 text-indigo-500"></i>Dialogue Order
+            </h2>
+            
+            <div id="target-container" class="space-y-3">
+                <!-- Drop zones will be injected here via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="w-full max-w-4xl mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="checkAnswers()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:-translate-y-1">
+            <i class="fas fa-check-circle mr-2"></i>Check Answers
+        </button>
+        <button onclick="resetQuiz()" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:-translate-y-1">
+            <i class="fas fa-undo mr-2"></i>Reset
+        </button>
+    </div>
+
+    <!-- Feedback Message -->
+    <div id="feedback" class="hidden fixed bottom-5 right-5 bg-white border-l-4 p-4 rounded shadow-2xl animate-bounce">
+        <p class="font-bold" id="feedback-title">Result</p>
+        <p id="feedback-text">Message</p>
+    </div>
+
+    <script>
+        // Data Structure based on the prompt
+        // Order is the correct position (1-10)
+        // initialIndex is just for reference
+        const dialogueData = [
+            { id: 1, text: "No. That's all. Thanks.", order: 8 },
+            { id: 2, text: "Would you like anything to drink?", order: 5 },
+            { id: 3, text: "Yes, I'll have rice with fried vegetables.", order: 4 },
+            { id: 4, text: "Here you are.", order: 3 },
+            { id: 5, text: "Good afternoon. What will you have, sir?", order: 1 }, // Fixed
+            { id: 6, text: "Waiter, how much does our bill come to?", order: 9 },
+            { id: 7, text: "Good afternoon. May I see the menu first?", order: 2 },
+            { id: 8, text: "Coffee, please.", order: 6 },
+            { id: 9, text: "Here you are. Sir. It's 1,000 kyats.", order: 10 },
+            { id: 10, text: "Anything else?", order: 7 }
+        ];
+
+        let selectedElement = null; // For click-to-move functionality
+        let isAudioPlaying = false;
+        let audioTimer = null;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+        });
+
+        function initGame() {
+            const sourceContainer = document.getElementById('source-container');
+            const targetContainer = document.getElementById('target-container');
+            
+            sourceContainer.innerHTML = '';
+            targetContainer.innerHTML = '';
+
+            // 1. Create Target Slots (1-10)
+            for (let i = 1; i <= 10; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'flex items-center gap-3';
+                
+                // Number label
+                const number = document.createElement('div');
+                number.className = 'w-8 h-8 flex-shrink-0 flex items-center justify-center bg-gray-200 rounded-full font-bold text-gray-600';
+                number.innerText = i;
+                
+                // The Drop Zone
+                const zone = document.createElement('div');
+                zone.className = 'drop-zone flex-grow bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-2 flex items-center min-h-[60px] relative';
+                zone.dataset.slotIndex = i;
+                
+                // Drag Events for Zone
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('click', () => handleZoneClick(zone)); // For click-to-move
+
+                // Logic for Fixed Sentence (#1 is sentence id 5)
+                if (i === 1) {
+                    const fixedItem = dialogueData.find(d => d.order === 1);
+                    const el = createDraggableElement(fixedItem, true); // true = locked
+                    zone.appendChild(el);
+                    zone.classList.add('bg-gray-100', 'border-gray-200'); // Style as locked
+                    zone.classList.remove('border-dashed');
+                }
+
+                slot.appendChild(number);
+                slot.appendChild(zone);
+                targetContainer.appendChild(slot);
+            }
+
+            // 2. Create Draggable Items (excluding the fixed one)
+            // We want them to appear in the order listed in the prompt (1, 2, 3...) excluding the fixed one
+            // Or just scrambled. Let's use the prompt's listing order 1-10.
+            const itemsToPlace = dialogueData.filter(d => d.order !== 1);
+            
+            itemsToPlace.forEach(data => {
+                const el = createDraggableElement(data, false);
+                sourceContainer.appendChild(el);
+            });
+        }
+
+        // Create the draggable card HTML element
+        function createDraggableElement(data, isLocked) {
+            const div = document.createElement('div');
+            div.className = 'draggable-item bg-white p-3 rounded shadow border border-gray-200 text-gray-800 text-sm md:text-base w-full no-select';
+            div.innerText = data.text;
+            div.dataset.id = data.id;
+            div.dataset.correctOrder = data.order;
+            
+            if (!isLocked) {
+                div.draggable = true;
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('click', (e) => handleItemClick(e, div));
+            } else {
+                div.classList.add('bg-gray-200', 'text-gray-500', 'cursor-not-allowed');
+                div.innerHTML += ' <span class="text-xs font-bold text-indigo-600 ml-2">(Given)</span>';
+            }
+
+            return div;
+        }
+
+        // --- Drag and Drop Handlers ---
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+            e.dataTransfer.effectAllowed = 'move';
+            // Also select it logically
+            selectItem(e.target);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // Necessary to allow dropping
+            const zone = e.currentTarget;
+            if (!hasChildItem(zone)) {
+                zone.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const zone = e.currentTarget;
+            zone.classList.remove('drag-over');
+
+            const id = e.dataTransfer.getData('text/plain');
+            const draggableElement = document.querySelector(`.draggable-item[data-id="${id}"]`);
+            
+            // Logic: Only allow drop if zone is empty
+            if (draggableElement && !hasChildItem(zone)) {
+                zone.appendChild(draggableElement);
+                deselectItem();
+            }
+        }
+
+        // --- Click to Move Logic (Mobile Friendly) ---
+
+        function handleItemClick(e, element) {
+            e.stopPropagation(); // Prevent bubbling
+            
+            // If already in a slot, allow moving back to source?
+            // Actually, let's just implement toggle selection
+            if (selectedElement === element) {
+                deselectItem();
+            } else {
+                selectItem(element);
+            }
+        }
+
+        function handleZoneClick(zone) {
+            if (selectedElement && !hasChildItem(zone)) {
+                zone.appendChild(selectedElement);
+                deselectItem();
+            }
+        }
+
+        // Handle clicking source container to return item
+        document.getElementById('source-container').addEventListener('click', (e) => {
+            if (selectedElement && e.currentTarget !== selectedElement.parentElement) {
+                document.getElementById('source-container').appendChild(selectedElement);
+                deselectItem();
+            }
+        });
+
+        // --- Helpers ---
+
+        function hasChildItem(zone) {
+            return zone.querySelector('.draggable-item') !== null;
+        }
+
+        function selectItem(element) {
+            // Remove class from previous
+            if (selectedElement) selectedElement.classList.remove('selected');
+            selectedElement = element;
+            selectedElement.classList.add('selected');
+        }
+
+        function deselectItem() {
+            if (selectedElement) selectedElement.classList.remove('selected');
+            selectedElement = null;
+        }
+
+        // --- Game Logic ---
+
+        function checkAnswers() {
+            const zones = document.querySelectorAll('.drop-zone');
+            let correctCount = 0;
+            let filledCount = 0;
+
+            zones.forEach(zone => {
+                const item = zone.querySelector('.draggable-item');
+                zone.classList.remove('correct', 'incorrect'); // Reset styles
+
+                if (item) {
+                    filledCount++;
+                    const expectedOrder = parseInt(zone.dataset.slotIndex);
+                    const itemOrder = parseInt(item.dataset.correctOrder);
+
+                    if (expectedOrder === itemOrder) {
+                        zone.classList.add('correct');
+                        correctCount++;
+                        // Add checkmark icon if not exists
+                        if(!item.innerText.includes('✓')) {
+                            // pure visual change, don't alter text permanently to avoid mess on reset
+                        }
+                    } else {
+                        zone.classList.add('incorrect');
+                    }
+                }
+            });
+
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            feedback.classList.remove('hidden');
+            
+            if (correctCount === 10) {
+                feedbackTitle.innerText = "Excellent!";
+                feedbackTitle.className = "font-bold text-green-600";
+                feedbackText.innerText = "You got all sentences in the correct order!";
+            } else {
+                feedbackTitle.innerText = "Keep Trying";
+                feedbackTitle.className = "font-bold text-orange-600";
+                feedbackText.innerText = `You have ${correctCount} correct out of 10.`;
+            }
+
+            // Hide feedback after 3 seconds
+            setTimeout(() => {
+                feedback.classList.add('hidden');
+            }, 4000);
+        }
+
+        function resetQuiz() {
+            const sourceContainer = document.getElementById('source-container');
+            const zones = document.querySelectorAll('.drop-zone');
+            
+            // Move all non-locked items back to source
+            const items = document.querySelectorAll('.draggable-item');
+            
+            // Get items and sort them by their original ID (1-10 sequence from prompt) to keep list tidy
+            const itemsArray = Array.from(items);
+            itemsArray.sort((a, b) => parseInt(a.dataset.id) - parseInt(b.dataset.id));
+
+            itemsArray.forEach(item => {
+                // If it's not the fixed one (Order 1)
+                if (item.dataset.correctOrder !== "1") {
+                    sourceContainer.appendChild(item);
+                }
+            });
+
+            // Clear zone colors
+            zones.forEach(zone => {
+                zone.classList.remove('correct', 'incorrect', 'drag-over');
+            });
+            
+            deselectItem();
+        }
+
+        // --- Audio Logic ---
+        function toggleAudio() {
+            const btn = document.getElementById('playAudioBtn');
+            const icon = document.getElementById('audioIcon');
+            const text = document.getElementById('audioText');
+            const visualizer = document.getElementById('visualizer');
+
+            if (isAudioPlaying) {
+                // Stop
+                clearInterval(audioTimer);
+                isAudioPlaying = false;
+                icon.innerHTML = '<i class="fas fa-play"></i>';
+                text.innerText = "Play Dialogue";
+                visualizer.classList.remove('playing');
+                btn.classList.remove('bg-pink-600');
+                btn.classList.add('bg-indigo-600');
+            } else {
+                // Play
+                isAudioPlaying = true;
+                icon.innerHTML = '<i class="fas fa-pause"></i>';
+                text.innerText = "Playing...";
+                visualizer.classList.add('playing');
+                btn.classList.remove('bg-indigo-600');
+                btn.classList.add('bg-pink-600');
+
+                // Auto stop after 10 seconds (simulated length)
+                audioTimer = setTimeout(() => {
+                    if(isAudioPlaying) toggleAudio();
+                }, 10000);
+            }
+        }
+
+    </script>
+            <!-- Activity 5: Role Play Video -->
+            <section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-purple-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <span class="bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center">5</span> 
+                    Role-Play Video Simulation
+                </h3>
+                
+                <div class="video-player max-w-2xl mx-auto" id="video-1">
+                    <div class="play-overlay" onclick="playVideo('video-1')">
+                        <i data-lucide="play-circle" class="text-white w-20 h-20 opacity-80 hover:opacity-100 transition"></i>
+                    </div>
+                    <div class="video-content" id="video-content-1">
+                        <!-- Simulated Video Content -->
+                        <div class="subtitle" id="sub-1">Ready... Action!</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-purple-50 p-4 rounded-xl">
+                    <center><h4 class="font-bold text-purple-800 mb-2">Useful Language</h4></center>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div style="border: 2px solid black; padding: 5px;" class="bg-orange-50 p-4 rounded-xl">
+                        <ul class="list-disc list-inside space-y-1 text-purple-900">
+                        <li>Are you ready to order?</li>
+                        <li>What would you like to have?</li>
+                        <li>What will you have?</li>
+                        <li>Would you like something to drink?</li>
+                    </ul>
+                    </div>
+                    <div style="border: 2px solid black; padding: 5px;" class="bg-orange-50 p-4 rounded-xl">
+                        <ul class="list-disc list-inside space-y-1 text-purple-900">
+                        <li>I'll have....... please.</li>
+                        <li>I'd like .......</li>
+                        <li>Can I have......?</li>
+                        <li>Can I see the menu?</li>
+                    </ul>
+                    </div>
+                    
+                </div>
+                    
+                </div>
+            </section>
+
+        </div>
+
+        <!-- LESSON 2 SECTION (Hidden by default) -->
+        <div id="lesson2" class="space-y-12 hidden">
+            
+            <header class="text-center space-y-2">
+                <h2 class="text-4xl font-bold text-emerald-800">Lesson 2: Do you eat healthy food?</h2>
+                <p class="text-xl text-slate-600">Health benefits, nutrients, and daily meals.</p>
+            </header>
+            <section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center">1</span>In pairs, ask and give short answers to the following questions.</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <p class="font-bold text-orange-700 mb-2">Question 1</p>
+                        <p>1. Where do you usually have your breakfast?</p>
+                        <div class="mt-2 text-sm text-slate-500 italic">Example Answer: my home</div>
+                        <input type="text" placeholder="Type your answer..." class="w-full mt-2 p-2 border rounded focus:ring-2 focus:ring-orange-300 outline-none">
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <p class="font-bold text-orange-700 mb-2">Question 2</p>
+                        <p>2. What do you usually have for breakfast at home?</p>
+                        <div class="mt-2 text-sm text-slate-500 italic">Example Answer: fried rice with eggs</div>
+                        <input type="text" placeholder="Type your answer..." class="w-full mt-2 p-2 border rounded focus:ring-2 focus:ring-orange-300 outline-none">
+                    </div>
+                    
+                </div>
+            </section>
+             <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center">2</span>Read the texts.</h3>   
+            <!-- Reading Section -->
+            <section class="grid md:grid-cols-2 gap-6">
+                <!-- Kaythi's Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border-t-8 border-pink-400">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">👧</div>
+                        <h3 class="text-xl font-bold text-slate-800">Kaythi (Breakfast)</h3>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Kaythi had a glass of milk and two <span class="text-pink-600 font-bold">sardine sandwiches</span> for breakfast at the school canteen. 
+                        Milk is rich in <span class="font-bold">calcium</span> for strong bones and teeth. 
+                        Omega 3 in sardines is good for skin and brain.
+                    </p>
+                </div>
+                <!-- Zaw Naing's Card -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border-t-8 border-blue-400">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl">👦</div>
+                        <h3 class="text-xl font-bold text-slate-800">Zaw Naing (Breakfast)</h3>
+                    </div>
+                    <p class="text-slate-600 leading-relaxed text-sm">
+                        Zaw Naing had <span class="text-blue-600 font-bold">fried rice with peas and a fried egg</span> at home. 
+                        Eggs and peas have <span class="font-bold">proteins</span>. Rice has <span class="font-bold">carbohydrates</span>. 
+                        These build body muscles.
+                    </p>
+                </div>
+            </section>
+<section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center"></span> Watch AI Generated Videos</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <div>
+    <video id="myVideo3" width="500">
+    <source src="./BK.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+<br>
+<button id="playButton3">Play Video</button>
+<script>
+    // Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Select the video and the button elements
+    const video = document.getElementById('myVideo3');
+    const playButton = document.getElementById('playButton3');
+
+    // Add a click event listener to the button
+    playButton.addEventListener('click', () => {
+        // Check if the video is paused or has ended, then play it
+        if (video.paused || video.ended) {
+            video.play();
+            playButton.textContent = 'Pause Video'; // Optionally change button text to "Pause"
+        } else {
+            // Otherwise, pause the video
+            video.pause();
+            playButton.textContent = 'Play Video'; // Optionally change button text back to "Play"
+        }
+    });
+});
+
+</script>
+</div>
+</div>
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <div><video id="myVideo1" width="500">
+    <source src="./BN.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+<br>
+<button id="playButton1">Play Video</button>
+<script>
+    // Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Select the video and the button elements
+    const video = document.getElementById('myVideo1');
+    const playButton = document.getElementById('playButton1');
+
+    // Add a click event listener to the button
+    playButton.addEventListener('click', () => {
+        // Check if the video is paused or has ended, then play it
+        if (video.paused || video.ended) {
+            video.play();
+            playButton.textContent = 'Pause Video'; // Optionally change button text to "Pause"
+        } else {
+            // Otherwise, pause the video
+            video.pause();
+            playButton.textContent = 'Play Video'; // Optionally change button text back to "Play"
+        }
+    });
+});
+
+</script>
+</div>
+                    </div>
+                    
+                </div>
+            </section>
+            <!-- Activity 2a: Drag and Drop Names -->
+            <section class="bg-white p-6 rounded-2xl shadow-md">
+                <h3 class="text-xl font-bold mb-4">2a. Who ate what? (Drag Name to Food)</h3>
+                <div class="grid grid-cols-2 gap-8 mb-6">
+                    <div class="drop-zone-person bg-pink-50 p-6 rounded-xl border-2 border-pink-200 text-center" data-person="Kaythi">
+                        <div class="text-4xl mb-2">🥛🥪</div>
+                        <p class="font-bold text-pink-700">Sardine Sandwich & Milk</p>
+                        <div class="target-area min-h-[40px] mt-2 border-b-2 border-pink-300"></div>
+                    </div>
+                    <div class="drop-zone-person bg-blue-50 p-6 rounded-xl border-2 border-blue-200 text-center" data-person="Zaw Naing">
+                        <div class="text-4xl mb-2">🍳🍚</div>
+                        <p class="font-bold text-blue-700">Fried Rice & Eggs</p>
+                        <div class="target-area min-h-[40px] mt-2 border-b-2 border-blue-300"></div>
+                    </div>
+                </div>
+                <div class="flex justify-center gap-4">
+                    <div class="draggable bg-blue-600 text-white px-4 py-2 rounded-full cursor-pointer hover:shadow-lg" draggable="true" id="person-zn">Zaw Naing</div>
+                    <div class="draggable bg-pink-600 text-white px-4 py-2 rounded-full cursor-pointer hover:shadow-lg" draggable="true" id="person-k">Kaythi</div>
+                </div>
+            </section>
+
+            <!-- Activity 2b: Table -->
+            <section class="bg-white p-6 rounded-2xl shadow-md overflow-x-auto">
+                <h3 class="text-xl font-bold mb-4">2b. Complete the Health Benefits Table</h3>
+                <table class="w-full text-left border-collapse min-w-[600px]">
+                    <thead>
+                        <tr class="bg-emerald-100 text-emerald-800">
+                            <th class="p-3 rounded-tl-lg">Name</th>
+                            <th class="p-3">Food items</th>
+                            <th class="p-3 rounded-tr-lg">Health benefits</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="border-b">
+                            <td class="p-3 font-bold text-pink-600">Kaythi</td>
+                            <td class="p-3">Sardine sandwiches</td>
+                            <td class="p-3"><input type="text" id="tbl-1" class="border p-1 w-full rounded" placeholder="good for..."></td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 font-bold text-blue-600">Zaw Naing</td>
+                            <td class="p-3">Fried rice, peas, egg</td>
+                            <td class="p-3"><input type="text" id="tbl-2" class="border p-1 w-full rounded" placeholder="builds..."></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button onclick="checkTable()" class="mt-4 bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700 text-sm">Check Answer</button>
+                <div id="table-feedback" class="mt-2 text-sm font-bold"></div>
+            </section>
+
+            <!-- Reading Part 2: Lunch -->
+            <section class="bg-slate-800 text-white p-8 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-bold mb-4 text-emerald-400">Lunch Time Reading</h3>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-lg font-bold text-pink-300 mb-2">Kaythi's Lunch</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Fried noodles (carbohydrates/energy), Chicken (protein/growth), Broccoli (Vitamin K/memory). 
+                            Dessert: Dark chocolate (good for skin). She wants to be taller and study well.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-blue-300 mb-2">Zaw Naing's Lunch</h4>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Rice, fish curry, fried string beans. Two bananas. 
+                            String beans (fibre/blood flow). Green/Yellow veg (good for eyes). 
+                            He wants to play basketball better.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Action Video Placeholder -->
+                
+            </section>
+<section class="bg-white p-6 rounded-2xl shadow-md border-l-4 border-orange-500">
+                <h3 class="text-xl font-bold mb-4 flex items-center gap-2"><span class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center"></span> Watch AI Generated Videos</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <div>
+    <video id="myVideo2" width="500">
+    <source src="./Lunch 1.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+<br>
+<button id="playButton2">Play Video</button>
+<script>
+    // Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Select the video and the button elements
+    const video = document.getElementById('myVideo2');
+    const playButton = document.getElementById('playButton2');
+
+    // Add a click event listener to the button
+    playButton.addEventListener('click', () => {
+        // Check if the video is paused or has ended, then play it
+        if (video.paused || video.ended) {
+            video.play();
+            playButton.textContent = 'Pause Video'; // Optionally change button text to "Pause"
+        } else {
+            // Otherwise, pause the video
+            video.pause();
+            playButton.textContent = 'Play Video'; // Optionally change button text back to "Play"
+        }
+    });
+});
+
+</script>
+</div>
+</div>
+                    <div class="bg-orange-50 p-4 rounded-xl">
+                        <div><video id="myVideo4" width="500">
+    <source src="./Lunch2.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+<br>
+<button id="playButton4">Play Video</button>
+<script>
+    // Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+    // Select the video and the button elements
+    const video = document.getElementById('myVideo4');
+    const playButton = document.getElementById('playButton4');
+
+    // Add a click event listener to the button
+    playButton.addEventListener('click', () => {
+        // Check if the video is paused or has ended, then play it
+        if (video.paused || video.ended) {
+            video.play();
+            playButton.textContent = 'Pause Video'; // Optionally change button text to "Pause"
+        } else {
+            // Otherwise, pause the video
+            video.pause();
+            playButton.textContent = 'Play Video'; // Optionally change button text back to "Play"
+        }
+    });
+});
+
+</script>
+</div>
+                    </div>
+                    
+                </div>
+            </section>
+            <!-- Quizzes Container -->
+            <div class="grid lg:grid-cols-2 gap-8">
+                
+                <!-- True/False -->
+                <section class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-red-500">
+                    <h3 class="text-lg font-bold mb-4 text-red-600">True or False?</h3>
+                    <form id="quiz-tf" class="space-y-4 text-sm">
+                        <div>
+                            <p class="mb-1">1. Milk is rich in calcium.</p>
+                            <label><input type="radio" name="q1" value="true"> True</label>
+                            <label class="ml-4"><input type="radio" name="q1" value="false"> False</label>
+                        </div>
+                        <div>
+                            <p class="mb-1">2. Sardines are good for bones.</p>
+                            <label><input type="radio" name="q2" value="true"> True</label>
+                            <label class="ml-4"><input type="radio" name="q2" value="false"> False</label> <!-- False, good for skin/brain -->
+                        </div>
+                        <div>
+                            <p class="mb-1">3. Eggs and peas contain proteins.</p>
+                            <label><input type="radio" name="q3" value="true"> True</label>
+                            <label class="ml-4"><input type="radio" name="q3" value="false"> False</label>
+                        </div>
+                        <div>
+                            <p class="mb-1">4. Broccoli has carbohydrates.</p>
+                            <label><input type="radio" name="q4" value="true"> True</label>
+                            <label class="ml-4"><input type="radio" name="q4" value="false"> False</label> <!-- False, Vitamin K -->
+                        </div>
+                        <div>
+                            <p class="mb-1">5. Meat is good for body growth.</p>
+                            <label><input type="radio" name="q5" value="true"> True</label>
+                            <label class="ml-4"><input type="radio" name="q5" value="false"> False</label>
+                        </div>
+                    </form>
+                    <button onclick="checkTF()" class="mt-4 bg-red-500 text-white px-4 py-2 rounded text-sm hover:bg-red-600">Check T/F</button>
+                    <div id="res-tf" class="mt-2 text-sm font-bold"></div>
+                </section>
+
+                <!-- Fill Blanks -->
+                <section class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-blue-500">
+                    <h3 class="text-lg font-bold mb-4 text-blue-600">Fill in the blanks</h3>
+                    <div class="space-y-3 text-sm">
+                        <div>1. <input type="text" id="fb1" class="border-b border-slate-400 w-24 outline-none text-center text-blue-600" placeholder="?"> contains carbohydrates. (Noodles)</div>
+                        <div>2. Vitamin K is good for <input type="text" id="fb2" class="border-b border-slate-400 w-24 outline-none text-center text-blue-600" placeholder="?">. (memory)</div>
+                        <div>3. Green/Yellow veg are good for <input type="text" id="fb3" class="border-b border-slate-400 w-24 outline-none text-center text-blue-600" placeholder="?">. (eyes)</div>
+                        <div>4. Chicken and fish contain <input type="text" id="fb4" class="border-b border-slate-400 w-24 outline-none text-center text-blue-600" placeholder="?">. (protein)</div>
+                        <div>5. Zaw Naing had <input type="text" id="fb5" class="border-b border-slate-400 w-24 outline-none text-center text-blue-600" placeholder="?"> after lunch. (fruit/bananas)</div>
+                    </div>
+                    <button onclick="checkFill()" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600">Check Blanks</button>
+                    <div id="res-fb" class="mt-2 text-sm font-bold"></div>
+                </section>
+
+                <!-- Multiple Choice -->
+                <section class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-emerald-500 lg:col-span-2">
+                    <h3 class="text-lg font-bold mb-4 text-emerald-600">Multiple Choice</h3>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm" id="mcq-container">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button onclick="checkMCQ()" class="mt-4 bg-emerald-500 text-white px-4 py-2 rounded text-sm hover:bg-emerald-600">Check MCQ</button>
+                    <div id="res-mcq" class="mt-2 text-sm font-bold"></div>
+                </section>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 py-6 text-center mt-12">
+        <Marquee><p>Grade 6 Unit 6 Lesson 1 and 2. National ICT Awards 2025 (Educational Project & Skills Competition)</p></Marquee>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- NAVIGATION ---
+        function switchTab(tabId) {
+            document.getElementById('lesson1').classList.add('hidden');
+            document.getElementById('lesson2').classList.add('hidden');
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Button Styles
+            const btn1 = document.getElementById('btn-lesson1');
+            const btn2 = document.getElementById('btn-lesson2');
+            
+            if(tabId === 'lesson1') {
+                btn1.className = "px-4 py-2 rounded-full bg-white text-emerald-700 font-bold transition shadow";
+                btn2.className = "px-4 py-2 rounded-full bg-emerald-700 text-white hover:bg-emerald-800 transition";
+            } else {
+                btn1.className = "px-4 py-2 rounded-full bg-emerald-700 text-white hover:bg-emerald-800 transition";
+                btn2.className = "px-4 py-2 rounded-full bg-white text-emerald-700 font-bold transition shadow";
+            }
+            window.scrollTo(0,0);
+        }
+
+        // --- AUDIO ENGINE (TTS) ---
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 1.1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function playAudio(type) {
+            if (type === 'dialogue1') {
+                const text = "Good morning. What would you like to have? May we look at the menu first? Here you are. Yes, I'll have fried vegetables. And what about you Toe Toe? I'll have chicken curry. Would you like anything to drink? I'll have lime juice. I'll have chicken noodle soup please. Waiter, how much does our bill come to? It's 3700 kyats.";
+                speak(text);
+            } else if (type === 'prices') {
+                const text = "Number 1: 2000 kyats. Number 2: 1300 kyats. Number 3: 800 kyats. Number 4: 3700 kyats. Number 5: 8500 kyats.";
+                speak(text);
+            }
+        }
+
+        // --- DRAG AND DROP LOGIC (Lesson 1) ---
+        const draggables = document.querySelectorAll('.draggable');
+        const dropZones = document.querySelectorAll('.drop-zone');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                zone.classList.add('drag-over');
+            });
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const draggable = document.querySelector('.dragging');
+                
+                // Logic check
+                const matchId = draggable.id;
+                const zoneId = zone.getAttribute('data-match');
+                
+                if (matchId === zoneId) {
+                    zone.innerHTML = ""; // clear placeholder
+                    zone.appendChild(draggable);
+                    zone.classList.add('bg-green-100', 'border-green-500');
+                    draggable.setAttribute('draggable', 'false');
+                    draggable.style.cursor = 'default';
+                } else {
+                    alert("Try again! That doesn't match the picture.");
+                }
+            });
+        });
+
+        // --- DRAG AND DROP LOGIC (Lesson 2: People) ---
+        const dropZonesPerson = document.querySelectorAll('.drop-zone-person');
+        dropZonesPerson.forEach(zone => {
+            zone.addEventListener('dragover', e => e.preventDefault());
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                const draggable = document.querySelector('.dragging');
+                const personId = draggable.id;
+                const zoneName = zone.getAttribute('data-person');
+                
+                // Logic: person-zn -> Zaw Naing, person-k -> Kaythi
+                if((personId === 'person-zn' && zoneName === 'Zaw Naing') || 
+                   (personId === 'person-k' && zoneName === 'Kaythi')) {
+                    zone.querySelector('.target-area').appendChild(draggable);
+                    zone.classList.add('bg-green-50');
+                } else {
+                    alert("Wrong person!");
+                }
+            });
+        });
+
+
+        // --- VIDEO SIMULATION ---
+        function playVideo(id) {
+            const container = document.getElementById(id);
+            const overlay = container.querySelector('.play-overlay');
+            const content = container.querySelector('.video-content');
+            const sub = content.querySelector('.subtitle');
+            
+            overlay.style.display = 'none';
+            content.style.display = 'flex';
+            
+            // Simulate video playback with changing subtitles
+            let subs = [];
+            if(id === 'video-1') {
+                subs = [
+                    "Waiter: Are you ready to order?",
+                    "Customer: How much is the soup?",
+                    "Waiter: It's 1,200 kyats.",
+                    "Customer: Can I have soup and coffee?",
+                    "Waiter: That'll be 1,500 kyats."
+                ];
+            } else {
+                subs = [
+                    "Kaythi is eating broccoli for memory.",
+                    "Zaw Naing is eating rice for energy.",
+                    "Healthy food makes us strong!",
+                    "Do you eat healthy food?"
+                ];
+            }
+
+            let i = 0;
+            sub.textContent = subs[0];
+            const interval = setInterval(() => {
+                i++;
+                if(i < subs.length) {
+                    sub.textContent = subs[i];
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        overlay.style.display = 'flex';
+                        content.style.display = 'none';
+                    }, 2000);
+                }
+            }, 2500);
+        }
+
+        // --- QUIZ CHECKERS ---
+
+        function checkDialogue1() {
+            const a1 = document.getElementById('d1-a1').value;
+            const a2 = document.getElementById('d1-a2').value;
+            const a3 = document.getElementById('d1-a3').value;
+            const a4 = document.getElementById('d1-a4').value;
+            const res = document.getElementById('result-d1');
+
+            if(a1 === 'fried vegetables' && a2 === 'chicken curry' && a3 === 'lime juice' && a4 === 'chicken noodle soup') {
+                res.textContent = "Correct! Well done.";
+                res.className = "mt-2 text-sm font-bold text-green-600";
+            } else {
+                res.textContent = "Some answers are wrong. Listen again.";
+                res.className = "mt-2 text-sm font-bold text-red-600";
+            }
+        }
+
+        function checkPrices() {
+            const p1 = document.getElementById('price1').value;
+            const p2 = document.getElementById('price2').value;
+            const p3 = document.getElementById('price3').value;
+            const p4 = document.getElementById('price4').value;
+            const p5 = document.getElementById('price5').value;
+            const res = document.getElementById('result-prices');
+
+            if(p1==2000 && p2==1300 && p3==800 && p4==3700 && p5==8500) {
+                res.textContent = "All prices correct! Excellent listening.";
+                res.className = "mt-2 text-sm font-bold text-green-600";
+            } else {
+                res.textContent = "Check again: 1. 2000, 2. 1300, 3. 800, 4. 3700, 5. 8500";
+                res.className = "mt-2 text-sm font-bold text-red-600";
+            }
+        }
+
+        function checkTable() {
+            const t1 = document.getElementById('tbl-1').value.toLowerCase();
+            const t2 = document.getElementById('tbl-2').value.toLowerCase();
+            const res = document.getElementById('table-feedback');
+
+            if(t1.includes('skin and brain') && t2.includes('build our muscle')) {
+                 res.textContent = "Correct! Bones/Teeth and Muscles.";
+                 res.className = "mt-2 text-sm font-bold text-green-600";
+            } else {
+                 res.textContent = "Tip: Kaythi's food is good for bones/teeth. Zaw's food builds muscles.";
+                 res.className = "mt-2 text-sm font-bold text-red-600";
+            }
+        }
+
+        function checkTF() {
+            // Answers: 1T, 2F, 3T, 4F, 5T
+            const answers = {q1:'true', q2:'false', q3:'true', q4:'false', q5:'true'};
+            let score = 0;
+            const fd = new FormData(document.getElementById('quiz-tf'));
+            
+            for(let key in answers) {
+                if(fd.get(key) === answers[key]) score++;
+            }
+            
+            const res = document.getElementById('res-tf');
+            res.textContent = `You got ${score}/5 correct.`;
+            res.className = score === 5 ? "mt-2 text-green-600 font-bold" : "mt-2 text-red-600 font-bold";
+        }
+
+        function checkFill() {
+            // Answers: Noodles, memory, eyes, protein, fruit/bananas
+            const f1 = document.getElementById('fb1').value.toLowerCase();
+            const f2 = document.getElementById('fb2').value.toLowerCase();
+            const f3 = document.getElementById('fb3').value.toLowerCase();
+            const f4 = document.getElementById('fb4').value.toLowerCase();
+            const f5 = document.getElementById('fb5').value.toLowerCase();
+
+            let score = 0;
+            if(f1.includes('noodle')) score++;
+            if(f2.includes('memory')) score++;
+            if(f3.includes('eye')) score++;
+            if(f4.includes('protein')) score++;
+            if(f5.includes('fruit') || f5.includes('banana')) score++;
+
+            const res = document.getElementById('res-fb');
+            res.textContent = `Score: ${score}/5`;
+            res.className = score === 5 ? "mt-2 text-green-600 font-bold" : "mt-2 text-red-600 font-bold";
+        }
+
+        // Generate MCQ
+        const mcqs = [
+            {q: "1. Fish and milk are good for...", opt: ["bones", "skin", "hair"], ans: 0}, // A
+            {q: "2. Rice is good for...", opt: ["growth", "energy", "eyes"], ans: 1}, // B
+            {q: "3. Proteins are good for...", opt: ["growth", "energy", "eyes"], ans: 0}, // A
+            {q: "4. String beans are rich in...", opt: ["carbs", "fibre", "calcium"], ans: 1}, // B
+            {q: "5. Fruits are rich in...", opt: ["carbs", "proteins", "vitamins"], ans: 2} // C
+        ];
+
+        const mcqContainer = document.getElementById('mcq-container');
+        mcqs.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = "bg-slate-50 p-3 rounded";
+            div.innerHTML = `<p class="font-bold mb-2">${item.q}</p>`;
+            item.opt.forEach((opt, oIdx) => {
+                div.innerHTML += `<label class="block"><input type="radio" name="mcq${idx}" value="${oIdx}"> ${opt}</label>`;
+            });
+            mcqContainer.appendChild(div);
+        });
+
+        function checkMCQ() {
+            let score = 0;
+            mcqs.forEach((item, idx) => {
+                const selected = document.querySelector(`input[name="mcq${idx}"]:checked`);
+                if(selected && parseInt(selected.value) === item.ans) score++;
+            });
+            const res = document.getElementById('res-mcq');
+            res.textContent = `Score: ${score}/5`;
+            res.className = score === 5 ? "mt-2 text-green-600 font-bold" : "mt-2 text-red-600 font-bold";
+        }
+
+    </script>
+</body>
+</html>
